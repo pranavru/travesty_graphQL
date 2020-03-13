@@ -1,22 +1,22 @@
 {
-    "customers": [
-        {
-            "id": "1",
-            "name": "Pranav Rparelia",
-            "email": "pranavruparelia9@gmail.com",
-            "age": 23
-        },
-        {
-            "id": "2",
-            "name": "Steve Smith",
-            "email": "s_smith@gmail.com",
-            "age": 25
-        },
-        {
-            "id": "3",
-            "name": "Sara Khan",
-            "email": "sk786@gmail.com",
-            "age": 21
-        }
-    ]
+  "customers": [
+    {
+      "id": "1",
+      "name": "Pranav Rparelia",
+      "email": "pranavruparelia9@gmail.com",
+      "age": 23
+    },
+    {
+      "id": "2",
+      "name": "Steve Smith",
+      "email": "s_smith@gmail.com",
+      "age": 25
+    },
+    {
+      "name": "Sara Ali Khan",
+      "email": "sak786@gmail.com",
+      "age": 21,
+      "id": "3"
+    }
+  ]
 }
