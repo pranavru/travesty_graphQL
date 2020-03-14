@@ -1,39 +1,10 @@
 const axios = require('axios');
-const {
-    GraphQLObjectType,
-    GraphQLString,
-    GraphQLInt,
-    GraphQLSchema,
-    GraphQLList,
-    GraphQLNonNull,
-    GraphQLBoolean
-} = require('graphql');
+const { GraphQLNonNull, GraphQLObjectType, GraphQLString } = require('graphql');
 
-// Type Todo
-const TodoType = new GraphQLObjectType({
-    name: 'todo',
-    fields: () => ({
-        id: { type: GraphQLString },
-        title: { type: GraphQLString },
-        completed: { type: GraphQLBoolean }
-    }),
-});
+const TodoType = require('./todoModel');
+const serviceURL = require('../assets/URLs/serviceURL').serviceURLTodos;
 
-const TodoQuery = new GraphQLObjectType({
-    name: 'rootQueryType',
-    fields: {
-        todos: {
-            type: new GraphQLList(TodoType),
-            resolve(parentValue, args) {
-                return axios.get('http://localhost:3000/todos/').then(
-                    res => res.data
-                );
-            }
-        }
-    }
-});
-
-const mutation = new GraphQLObjectType({
+module.exports = TodoMutation = new GraphQLObjectType({
     name: "todoMutation",
     fields: {
         addTodo: {
@@ -42,7 +13,7 @@ const mutation = new GraphQLObjectType({
                 title: { type: new GraphQLNonNull(GraphQLString) },
             },
             resolve(parentValue, args) {
-                return axios.post("http://localhost:3000/todos/", {
+                return axios.post(serviceURL, {
                     title: args.title,
                     completed: false
                 }).then(
@@ -56,7 +27,7 @@ const mutation = new GraphQLObjectType({
                 id: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve(parentValue, args) {
-                return axios.delete("http://localhost:3000/todos/" + args.id).then(
+                return axios.delete(serviceURL + args.id).then(
                     res => res.data
                 );
             }
@@ -68,7 +39,7 @@ const mutation = new GraphQLObjectType({
                 title: { type: GraphQLString },
             },
             resolve(parentValue, args) {
-                return axios.put("http://localhost:3000/todos/" + args.id, {
+                return axios.put(serviceURL + args.id, {
                     title: args.title,
                     completed: false,
                 }).then(
@@ -83,7 +54,7 @@ const mutation = new GraphQLObjectType({
                 title: { type: GraphQLString },
             },
             resolve(parentValue, args) {
-                return axios.put("http://localhost:3000/todos/" + args.id, {
+                return axios.put(serviceURL + args.id, {
                     title: args.title,
                     completed: true,
                 }).then(
@@ -92,9 +63,4 @@ const mutation = new GraphQLObjectType({
             }
         }
     }
-})
-
-module.exports = new GraphQLSchema({
-    query: TodoQuery,
-    mutation
 });

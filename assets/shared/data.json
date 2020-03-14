@@ -1,9 +1,10 @@
 {
-  "customers": [
+  "users": [
     {
-      "title": "Cancel LinkedIn Subscription",
-      "completed": true,
-      "id": "1"
+      "id": "1",
+      "name": "Pranav Ruparelia",
+      "email": "pranavr@gmail.com",
+      "age": 23
     },
     {
       "id": "2",
@@ -38,6 +39,16 @@
       "title": "Connect the Express application - Store Data on mLab",
       "completed": false,
       "id": 4
+    },
+    {
+      "title": "Mohit Cholera",
+      "completed": false,
+      "id": 5
+    },
+    {
+      "title": "Mohit Cholera",
+      "completed": false,
+      "id": 6
     }
   ]
 }
