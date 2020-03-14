@@ -1,10 +1,9 @@
 {
   "customers": [
     {
-      "id": "1",
-      "name": "Pranav Rparelia",
-      "email": "pranavruparelia9@gmail.com",
-      "age": 23
+      "title": "Cancel LinkedIn Subscription",
+      "completed": true,
+      "id": "1"
     },
     {
       "id": "2",
@@ -17,6 +16,28 @@
       "email": "sak786@gmail.com",
       "age": 21,
       "id": "3"
+    }
+  ],
+  "todos": [
+    {
+      "title": "Cancel LinkedIn Subscription",
+      "completed": false,
+      "id": 1
+    },
+    {
+      "title": "Cancel LinkedIn Subscription",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "Create a React Application - Todos",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "title": "Connect the Express application - Store Data on mLab",
+      "completed": false,
+      "id": 4
     }
   ]
 }

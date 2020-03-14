@@ -1,84 +1,100 @@
-const graphql = require('graphql');
-const TODOs = [
-    {
-        "id": 1446412739542,
-        "title": "Read emails",
-        "completed": false
-    },
-    {
-        "id": 1446412740883,
-        "title": "Buy orange",
-        "completed": true
-    }
-];
+const axios = require('axios');
+const {
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLInt,
+    GraphQLSchema,
+    GraphQLList,
+    GraphQLNonNull,
+    GraphQLBoolean
+} = require('graphql');
 
-const TodoType = new graphql.GraphQLObjectType({
+// Type Todo
+const TodoType = new GraphQLObjectType({
     name: 'todo',
-    fields: function () {
-        return {
-            id: {
-                type: graphql.GraphQLID
-            },
-            title: {
-                type: graphql.GraphQLString
-            },
-            completed: {
-                type: graphql.GraphQLBoolean
-            }
-        }
-    }
+    fields: () => ({
+        id: { type: GraphQLString },
+        title: { type: GraphQLString },
+        completed: { type: GraphQLBoolean }
+    }),
 });
 
-const queryType = new graphql.GraphQLObjectType({
-    name: 'Query',
-    fields: function () {
-        return {
-            todos: {
-                type: new graphql.GraphQLList(TodoType),
-                resolve: function () {
-                    return new Promise(function (resolve, reject) {
-                        setTimeout(function () {
-                            resolve(TODOs)
-                        }, 4000)
-                    });
-                }
-            }
-        }
-    }
-});
-
-var MutationAdd = {
-    type: TodoType,
-    description: 'Add a Todo',
-    args: {
-        title: {
-            name: 'Todo title',
-            type: new graphql.GraphQLNonNull(graphql.GraphQLString)
-        }
-    },
-    resolve: (root, args) => {
-        var newTodo = new TODO({
-            title: args.title,
-            completed: false
-        })
-        newTodo.id = newTodo._id
-        return new Promise((resolve, reject) => {
-            newTodo.save(function (err) {
-                if (err) reject(err)
-                else resolve(newTodo)
-            })
-        })
-    }
-}
-
-var MutationType = new graphql.GraphQLObjectType({
-    name: 'Mutation',
+const TodoQuery = new GraphQLObjectType({
+    name: 'rootQueryType',
     fields: {
-        add: MutationAdd
+        todos: {
+            type: new GraphQLList(TodoType),
+            resolve(parentValue, args) {
+                return axios.get('http://localhost:3000/todos/').then(
+                    res => res.data
+                );
+            }
+        }
     }
 });
 
-module.exports = new graphql.GraphQLSchema({
-    query: queryType,
-    mutation: MutationType
+const mutation = new GraphQLObjectType({
+    name: "todoMutation",
+    fields: {
+        addTodo: {
+            type: TodoType,
+            args: {
+                title: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parentValue, args) {
+                return axios.post("http://localhost:3000/todos/", {
+                    title: args.title,
+                    completed: false
+                }).then(
+                    res => res.data
+                );
+            }
+        },
+        deleteTodo: {
+            type: TodoType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parentValue, args) {
+                return axios.delete("http://localhost:3000/todos/" + args.id).then(
+                    res => res.data
+                );
+            }
+        },
+        editTodo: {
+            type: TodoType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                title: { type: GraphQLString },
+            },
+            resolve(parentValue, args) {
+                return axios.put("http://localhost:3000/todos/" + args.id, {
+                    title: args.title,
+                    completed: false,
+                }).then(
+                    res => res.data
+                );
+            }
+        },
+        todoCompleted: {
+            type: TodoType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                title: { type: GraphQLString },
+            },
+            resolve(parentValue, args) {
+                return axios.put("http://localhost:3000/todos/" + args.id, {
+                    title: args.title,
+                    completed: true,
+                }).then(
+                    res => res.data
+                );
+            }
+        }
+    }
+})
+
+module.exports = new GraphQLSchema({
+    query: TodoQuery,
+    mutation
 });
